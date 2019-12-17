@@ -3,9 +3,11 @@ import 'package:nasa_apod_flutter/models/item.dart';
 
 class ApodList extends StatefulWidget {
   var items = new List<Item>();
+  var days = [];
 
   ApodList() {
     items = [];
+
     items.add(Item(title: "test 1", done: false));
     items.add(Item(title: "test 2", done: false));
     items.add(Item(title: "test 3", done: false));
@@ -13,19 +15,52 @@ class ApodList extends StatefulWidget {
     dateArray();
   }
 
+  dateArray() {
+    DateTime startDate = new DateTime(1995, 6, 15);
+    DateTime endDate = new DateTime.now();
+
+    var ano = endDate.year.toInt();
+    var mes = endDate.month.toInt();
+    var dia = endDate.day.toInt();
+
+    var count = 0;
+    while (ano >= 2017) {
+      while (mes >= 1) {
+        while (dia >= 1) {
+          count++;
+          // DateTime oi = Date
+          DateTime currentDate = DateTime(ano, mes, dia);
+          if (currentDate != null) {
+            days.add("$ano-$mes-$dia");
+          }
+          dia--;
+        }
+        dia = 31;
+        mes--;
+      }
+      mes = 12;
+      ano--;
+    }
+
+    print(days);
+
+    // for (var ano = endDate.year.toInt(); ano >= 1995; ano--) {
+    //   for (var mes = endDate.month.toInt(); mes >= 1; mes--) {
+    //     for (var dia = endDate.day.toInt(); dia >= 1; dia--) {
+    //       print("$ano - $mes - $dia");
+    //     }
+    //     dia = 31;
+    //   }
+    // }
+
+    print(startDate.day.toInt());
+    print(endDate);
+  }
+
+  convertDate() {}
+
   @override
   _ApodListState createState() => _ApodListState();
-}
-
-dateArray() {
-  DateTime startDate = new DateTime(1995, 6, 15);
-  DateTime endDate = new DateTime.now();
-  print(startDate);
-  print(endDate);
-}
-
-convertDate(){
-  
 }
 
 class _ApodListState extends State<ApodList> {
