@@ -16,19 +16,15 @@ class ApodList extends StatefulWidget {
   }
 
   dateArray() {
-    DateTime startDate = new DateTime(1995, 6, 15);
-    DateTime endDate = new DateTime.now();
+    DateTime startDate = new DateTime.now();
 
-    var ano = endDate.year.toInt();
-    var mes = endDate.month.toInt();
-    var dia = endDate.day.toInt();
+    var ano = startDate.year.toInt();
+    var mes = startDate.month.toInt();
+    var dia = startDate.day.toInt();
 
-    var count = 0;
     while (ano >= 2017) {
       while (mes >= 1) {
         while (dia >= 1) {
-          count++;
-          // DateTime oi = Date
           DateTime currentDate = DateTime(ano, mes, dia);
           if (currentDate != null) {
             days.add("$ano-$mes-$dia");
@@ -41,20 +37,6 @@ class ApodList extends StatefulWidget {
       mes = 12;
       ano--;
     }
-
-    print(days);
-
-    // for (var ano = endDate.year.toInt(); ano >= 1995; ano--) {
-    //   for (var mes = endDate.month.toInt(); mes >= 1; mes--) {
-    //     for (var dia = endDate.day.toInt(); dia >= 1; dia--) {
-    //       print("$ano - $mes - $dia");
-    //     }
-    //     dia = 31;
-    //   }
-    // }
-
-    print(startDate.day.toInt());
-    print(endDate);
   }
 
   convertDate() {}
