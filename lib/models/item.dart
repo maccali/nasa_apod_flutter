@@ -5,6 +5,7 @@ class Item {
   String mediaType;
   String serviceVersion;
   String url;
+  String copyright;
 
   Item({
     this.title,
@@ -13,6 +14,7 @@ class Item {
     this.mediaType,
     this.serviceVersion,
     this.url,
+    this.copyright,
   });
 
   Item.fromJson(Map<String, dynamic> json) {
@@ -22,6 +24,7 @@ class Item {
     mediaType = json['mediaType'];
     serviceVersion = json['serviceVersion'];
     url = json['url'];
+    copyright = json['copyright'];
   }
 
   Map<String, dynamic> toJson() {
@@ -32,6 +35,7 @@ class Item {
     data['mediaType'] = this.mediaType;
     data['serviceVersion'] = this.serviceVersion;
     data['url'] = this.url;
+    data['copyright'] = this.copyright;
     return data;
   }
 }
