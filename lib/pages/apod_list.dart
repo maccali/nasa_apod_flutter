@@ -1,6 +1,7 @@
 import 'dart:convert';
+// import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:nasa_apod_flutter/models/item.dart';
+// import 'package:nasa_apod_flutter/models/item.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:transparent_image/transparent_image.dart';
@@ -8,9 +9,9 @@ import 'package:transparent_image/transparent_image.dart';
 class ApodList extends StatefulWidget {
   // var items = new List<Item>();
   var items = [];
-  var startDate = "2019-12-14";
+  var startDate = "2019-11-1";
   var endDate = "";
-  var limitReq = 5;
+  var limitReq = 1;
   var countReq = 0;
 
   // limite de 6 request IM APOD API per second (5)
@@ -60,14 +61,16 @@ class _ApodListState extends State<ApodList> {
               valueMap = json.decode(dataItem);
               Iterable inReverseValueMap = valueMap.reversed;
               valueMap = inReverseValueMap.toList();
+              var c = 0;
 
               return ListView.builder(
                 itemCount: valueMap.length,
                 itemBuilder: (BuildContext ctxt, int index) {
                   final item = valueMap[index];
 
-                  print(item["media_type"]);
-                  print(item['url']);
+                  c++;
+                  print('https://picsum.photos/id/$c/400/400');
+
                   return Container(
                     decoration: BoxDecoration(
                         color: Colors.grey[200],
@@ -81,15 +84,29 @@ class _ApodListState extends State<ApodList> {
                       children: <Widget>[
                         Stack(children: <Widget>[
                           (item["media_type"] == "image")
-                              ? ClipRRect(
+                              ?
+                              // CachedNetworkImage(
+                              //     imageUrl:
+                              //         "http://via.placeholder.com/350x150",
+                              //     placeholder: (context, url) =>
+                              //         CircularProgressIndicator(),
+                              //     errorWidget: (context, url, error) =>
+                              //         Icon(Icons.error),
+                              //   )
+                              ClipRRect(
                                   child: FadeInImage.memoryNetwork(
                                     placeholder: kTransparentImage,
+
                                     image: item['url'],
+                                    // image: "http://via.placeholder.com/350x150",
+                                    // image: "https://picsum.photos/id/$c/400/400",
                                     fit: BoxFit.cover,
+                                    
                                   ),
                                   borderRadius: new BorderRadius.circular(7.0),
+                                   
                                 )
-                              : Text(""),
+                              : Text("video"),
                           Center(
                             child: Align(
                               alignment: Alignment.centerRight,
@@ -105,7 +122,8 @@ class _ApodListState extends State<ApodList> {
                                     border:
                                         Border.all(color: Colors.deepPurple)),
                                 child: Text(
-                                  item["date"],
+                                  // item["date"],
+                                  c.toString(),
                                   style: TextStyle(
                                     // fontWeight: FontWeight.bold,
                                     fontSize: 15,
