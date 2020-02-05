@@ -1,18 +1,18 @@
 import 'dart:convert';
-// import 'dart:io';
 import 'package:flutter/material.dart';
-// import 'package:nasa_apod_flutter/models/item.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:transparent_image/transparent_image.dart';
+
+import '../models/apiNasa.dart';
 
 class ApodList extends StatefulWidget {
   // var items = new List<Item>();
   var items = [];
-  var startDate = "2019-11-1";
   var endDate = "";
   var limitReq = 1;
   var countReq = 0;
+  ApiNasa apiNasa = new ApiNasa();
 
   // limite de 6 request IM APOD API per second (5)
   // var endDate = new DateFormat("yMd");
@@ -25,6 +25,12 @@ class ApodList extends StatefulWidget {
     endDate = formatted.toString();
 
     items = [];
+
+    // ApiNasa apiNasa = new ApiNasa();
+    apiNasa.endDate = endDate;
+    apiNasa.startDate = '2020-1-1';
+
+    print(apiNasa.apiUrl);
   }
 
   @override
@@ -32,9 +38,8 @@ class ApodList extends StatefulWidget {
 }
 
 class _ApodListState extends State<ApodList> {
-  Future fetchData(String startDate, String endDate) async {
-    final res = await http.get(
-        "https://api.nasa.gov/planetary/apod?api_key=8g23BupBSJXtE86RIMPOYki0ele3dSRvoshr5yLM&start_date=$startDate&end_date=$endDate");
+  Future fetchData() async {
+    final res = await http.get(widget.apiNasa.apiUrl);
 
     if (res.statusCode == 200) {
       var itemsStr = res.body;
@@ -53,7 +58,7 @@ class _ApodListState extends State<ApodList> {
           title: Text('Apod'),
         ),
         body: FutureBuilder(
-          future: fetchData(widget.startDate, widget.endDate),
+          future: fetchData(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               var valueMap = [];
@@ -69,17 +74,12 @@ class _ApodListState extends State<ApodList> {
                   final item = valueMap[index];
 
                   c++;
-                  print('https://picsum.photos/id/$c/400/400');
 
                   return Container(
                     decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: new BorderRadius.circular(8.0),
-                        border: Border.all(color: Colors.deepPurple)),
-                    margin: new EdgeInsets.symmetric(
-                        horizontal: 7.0, vertical: 7.0),
-                    padding: new EdgeInsets.symmetric(
-                        horizontal: 7.0, vertical: 7.0),
+                      color: Colors.white24,
+                    ),
+                    margin: new EdgeInsets.symmetric( vertical: 7.0),
                     child: Column(
                       children: <Widget>[
                         Stack(children: <Widget>[
@@ -93,20 +93,15 @@ class _ApodListState extends State<ApodList> {
                               //     errorWidget: (context, url, error) =>
                               //         Icon(Icons.error),
                               //   )
-                              ClipRRect(
-                                  child: FadeInImage.memoryNetwork(
-                                    placeholder: kTransparentImage,
-
-                                    image: item['url'],
-                                    // image: "http://via.placeholder.com/350x150",
-                                    // image: "https://picsum.photos/id/$c/400/400",
-                                    fit: BoxFit.cover,
-                                    
+                              Container(
+                                  child: HtmlWidget(
+                                    '<img src="' + item['url'] + '">',
                                   ),
-                                  borderRadius: new BorderRadius.circular(7.0),
-                                   
                                 )
-                              : Text("video"),
+                              : HtmlWidget(
+                                  '<iframe src="' + item['url'] + '" width="560" height="500"></iframe>',
+                                  webView: true,
+                                ),
                           Center(
                             child: Align(
                               alignment: Alignment.centerRight,
@@ -114,17 +109,14 @@ class _ApodListState extends State<ApodList> {
                                 margin: new EdgeInsets.symmetric(
                                     horizontal: 6.0, vertical: 6.0),
                                 padding: new EdgeInsets.symmetric(
-                                    horizontal: 8.0, vertical: 5.0),
+                                    horizontal: 9.0, vertical: 7.0),
                                 decoration: BoxDecoration(
-                                    color: Colors.grey[200],
-                                    borderRadius:
-                                        new BorderRadius.circular(18.0),
-                                    border:
-                                        Border.all(color: Colors.deepPurple)),
+                                  color: Colors.black54,
+                                ),
                                 child: Text(
-                                  // item["date"],
-                                  c.toString(),
+                                  item["date"],
                                   style: TextStyle(
+                                    color: Colors.white,
                                     // fontWeight: FontWeight.bold,
                                     fontSize: 15,
                                   ),
@@ -137,11 +129,12 @@ class _ApodListState extends State<ApodList> {
                           alignment: Alignment.centerLeft,
                           child: Container(
                             margin:
-                                const EdgeInsets.only(top: 10.0, bottom: 6.0),
-                            // color: Colors.red,
+                                const EdgeInsets.only(left: 8.0, top: 6.0, bottom: 6.0, right: 8.0),
+                            
                             child: Text(
                               item['title'],
                               style: TextStyle(
+                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
                               ),
