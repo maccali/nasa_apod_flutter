@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'dart:convert';
 
 import '../config/api.dart';
 
@@ -10,21 +11,22 @@ class ApiNasa {
   static String _startDate = '&start_date=';
   static String _endDate = '&end_date=';
 
-  static  String _apiUrl = '';
+  static String _apiUrl = '';
 
   String get apiUrl => _apiUrl;
+  DateTime get currentDate => _currentDate;
 
-  static DateTime currentDate = new DateTime.now();
+  static DateTime _currentDate = new DateTime.now();
   static DateFormat formatter = new DateFormat('yyyy-MM-dd');
 
-  void getCurrentUrl(){
+  void getCurrentUrl() {
     endDate();
     startDate();
     updateApiUrl();
   }
 
-  void updateApiUrl(){
-    _apiUrl =  _apiBaseUrl + 'api_key=' + _apiKey + _startDate + _endDate;
+  void updateApiUrl() {
+    _apiUrl = _apiBaseUrl + 'api_key=' + _apiKey + _startDate + _endDate;
   }
 
   void endDate() {
@@ -32,36 +34,38 @@ class ApiNasa {
   }
 
   void startDate() {
-    var subt = currentDate.subtract(new Duration(days: 5));
+    var subt = currentDate.subtract(new Duration(days: 4));
     setStartDate(formatter.format(subt));
   }
 
-  void setEndDate(endDate){
-      _endDate = '&end_date=' + endDate;
-      print(_endDate);
+  void setEndDate(endDate) {
+    _endDate = '&end_date=' + endDate;
   }
 
-  void setStartDate(startDate){
-      _startDate = '&start_date=' + startDate;
-      print(_startDate);
-      print(_apiUrl);
+  void setCurrentDate(currentDate) {
+    _currentDate = currentDate;
   }
 
-  Future apodList() async {
-
-    // Seta os valores da data;
-    getCurrentUrl();
-
-    final res = await http.get(apiUrl);
-
-    if (res.statusCode == 200) {
-      var itemsStr = res.body;
-
-      return itemsStr;
-    } else {
-      throw ("some arbitrary error");
-    }
+  void setStartDate(startDate) {
+    _startDate = '&start_date=' + startDate;
   }
+
+  // apodList() async {
+
+  //   // Seta os valores da data;
+  //   getCurrentUrl();
+  //   currentDate = currentDate.subtract(new Duration(days: 5));
+
+  //   final res = await http.get(apiUrl);
+
+  //   if (res.statusCode == 200) {
+  //     var itemsStr = json.decode(res.body);
+  //     print(itemsStr);
+  //     return itemsStr;
+  //   } else {
+  //     throw ("some arbitrary error");
+  //   }
+  // }
 
   // DateTime _todayDate(){
   //   return new DateTime.now();

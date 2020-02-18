@@ -1,44 +1,37 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/apiNasa.dart';
 
-
 class ApodList extends StatefulWidget {
-
-  var items = [];
-  ApiNasa apiNasa = new ApiNasa();
-
-
-  ApodList() {
-
-    items = [];
-
-    // ApiNasa apiNasa = new ApiNasa();
-    // apiNasa.endDate = apiNasa.today();
-    // apiNasa.startDate = '2020-2-13';
-
-    print(apiNasa.apiUrl);
-    // print(apiNasa.);
-  }
-
   @override
   _ApodListState createState() => _ApodListState();
 }
 
 class _ApodListState extends State<ApodList> {
-  // Future fetchData() async {
-  //   final res = await http.get(widget.apiNasa.apiUrl);
+  List items = [];
+  ScrollController _scrollController = new ScrollController();
 
-  //   if (res.statusCode == 200) {
-  //     var itemsStr = res.body;
+  @override
+  void initState() {
+    super.initState();
+    fetchMore();
 
-  //     return itemsStr;
-  //   } else {
-  //     throw ("some arbitrary error");
-  //   }
-  // }
+    _scrollController.addListener(() {
+      if ((_scrollController.position.pixels - 800) ==
+          (_scrollController.position.maxScrollExtent - 800)) {
+        fetchMore();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,109 +40,95 @@ class _ApodListState extends State<ApodList> {
         appBar: AppBar(
           title: Text('Apod'),
         ),
-        body: FutureBuilder(
-          future: widget.apiNasa.apodList(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.done) {
-              var valueMap = [];
+        body: ListView.builder(
+          controller: _scrollController,
+          itemCount: items.length,
+          itemBuilder: (BuildContext context, int index) {
+            var item = items[index];
 
-              print(snapshot.data); 
-
-
-              String dataItem = snapshot.data;
-              valueMap = json.decode(dataItem);
-              Iterable inReverseValueMap = valueMap.reversed;
-              valueMap = inReverseValueMap.toList();
-
-              return ListView.builder(
-                itemCount: valueMap.length,
-                itemBuilder: (BuildContext ctxt, int index) {
-                  final item = valueMap[index];
-
-
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white24,
-                    ),
-                    margin: new EdgeInsets.symmetric( vertical: 7.0),
-                    child: Column(
-                      children: <Widget>[
-                        Stack(children: <Widget>[
-                          (item["media_type"] == "image")
-                              ?
-                              // CachedNetworkImage(
-                              //     imageUrl:
-                              //         "http://via.placeholder.com/350x150",
-                              //     placeholder: (context, url) =>
-                              //         CircularProgressIndicator(),
-                              //     errorWidget: (context, url, error) =>
-                              //         Icon(Icons.error),
-                              //   )
-                              Container(
-                                  child: HtmlWidget(
-                                    '<img src="' + item['url'] + '">',
-                                  ),
-                                )
-                              : HtmlWidget(
-                                  '<iframe src="' + item['url'] + '" width="560" height="500"></iframe>',
-                                  webView: true,
-                                ),
-                          Center(
-                            child: Align(
-                              alignment: Alignment.centerRight,
-                              child: Container(
-                                margin: new EdgeInsets.symmetric(
-                                    horizontal: 6.0, vertical: 6.0),
-                                padding: new EdgeInsets.symmetric(
-                                    horizontal: 9.0, vertical: 7.0),
-                                decoration: BoxDecoration(
-                                  color: Colors.black54,
-                                ),
-                                child: Text(
-                                  item["date"],
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    // fontWeight: FontWeight.bold,
-                                    fontSize: 15,
-                                  ),
-                                ),
-                              ),
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.white24,
+              ),
+              margin: new EdgeInsets.symmetric(vertical: 7.0),
+              child: Column(
+                children: <Widget>[
+                  Stack(children: <Widget>[
+                    (item["media_type"] == "image")
+                        ? Container(
+                            child: HtmlWidget(
+                              '<img src="' + item['url'] + '">',
                             ),
+                          )
+                        : HtmlWidget(
+                            '<iframe src="' +
+                                item['url'] +
+                                '" width="560" height="500"></iframe>',
+                            webView: true,
                           ),
-                        ]),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            margin:
-                                const EdgeInsets.only(left: 8.0, top: 6.0, bottom: 6.0, right: 8.0),
-                            
-                            child: Text(
-                              item['title'],
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                              ),
+                    Center(
+                      child: Align(
+                        alignment: Alignment.centerRight,
+                        child: Container(
+                          margin: new EdgeInsets.symmetric(
+                              horizontal: 6.0, vertical: 6.0),
+                          padding: new EdgeInsets.symmetric(
+                              horizontal: 9.0, vertical: 7.0),
+                          decoration: BoxDecoration(
+                            color: Colors.black54,
+                          ),
+                          child: Text(
+                            item["date"],
+                            style: TextStyle(
+                              color: Colors.white,
+                              // fontWeight: FontWeight.bold,
+                              fontSize: 15,
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
-                  );
-                },
-              );
-            } else {
-              if (snapshot.hasError) {
-                return Text(
-                  "Erro",
-                  style: TextStyle(
-                    color: Colors.white,
+                  ]),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                          left: 8.0, top: 6.0, bottom: 6.0, right: 8.0),
+                      child: Text(
+                        item['title'],
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
                   ),
-                );
-              }
-              return CircularProgressIndicator();
-            }
+                ],
+              ),
+            );
           },
         ));
+  }
+
+  fetch() async {
+    ApiNasa apiNasa = new ApiNasa();
+    apiNasa.getCurrentUrl();
+    apiNasa.setCurrentDate(apiNasa.currentDate.subtract(new Duration(days: 5)));
+
+    print(apiNasa.apiUrl);
+    final res = await http.get(apiNasa.apiUrl);
+
+    if (res.statusCode == 200) {
+      setState(() {
+        items = items + json.decode(res.body).reversed.toList();
+      });
+    } else {
+      throw ("some arbitrary error");
+    }
+  }
+
+  fetchMore() {
+    fetch();
   }
 }
