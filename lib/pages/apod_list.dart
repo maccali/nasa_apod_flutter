@@ -1,36 +1,26 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 
 import '../models/apiNasa.dart';
 
+
 class ApodList extends StatefulWidget {
-  // var items = new List<Item>();
+
   var items = [];
-  var endDate = "";
-  var limitReq = 1;
-  var countReq = 0;
   ApiNasa apiNasa = new ApiNasa();
 
-  // limite de 6 request IM APOD API per second (5)
-  // var endDate = new DateFormat("yMd");
 
   ApodList() {
-    var now = new DateTime.now();
-    var formatter = new DateFormat('yyyy-MM-dd');
-    var formatted = formatter.format(now);
-
-    endDate = formatted.toString();
 
     items = [];
 
     // ApiNasa apiNasa = new ApiNasa();
-    apiNasa.endDate = endDate;
-    apiNasa.startDate = '2020-1-1';
+    // apiNasa.endDate = apiNasa.today();
+    // apiNasa.startDate = '2020-2-13';
 
     print(apiNasa.apiUrl);
+    // print(apiNasa.);
   }
 
   @override
@@ -38,17 +28,17 @@ class ApodList extends StatefulWidget {
 }
 
 class _ApodListState extends State<ApodList> {
-  Future fetchData() async {
-    final res = await http.get(widget.apiNasa.apiUrl);
+  // Future fetchData() async {
+  //   final res = await http.get(widget.apiNasa.apiUrl);
 
-    if (res.statusCode == 200) {
-      var itemsStr = res.body;
+  //   if (res.statusCode == 200) {
+  //     var itemsStr = res.body;
 
-      return itemsStr;
-    } else {
-      throw ("some arbitrary error");
-    }
-  }
+  //     return itemsStr;
+  //   } else {
+  //     throw ("some arbitrary error");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -58,22 +48,24 @@ class _ApodListState extends State<ApodList> {
           title: Text('Apod'),
         ),
         body: FutureBuilder(
-          future: fetchData(),
+          future: widget.apiNasa.apodList(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               var valueMap = [];
+
+              print(snapshot.data); 
+
+
               String dataItem = snapshot.data;
               valueMap = json.decode(dataItem);
               Iterable inReverseValueMap = valueMap.reversed;
               valueMap = inReverseValueMap.toList();
-              var c = 0;
 
               return ListView.builder(
                 itemCount: valueMap.length,
                 itemBuilder: (BuildContext ctxt, int index) {
                   final item = valueMap[index];
 
-                  c++;
 
                   return Container(
                     decoration: BoxDecoration(
