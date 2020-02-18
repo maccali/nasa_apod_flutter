@@ -114,7 +114,7 @@ class _ApodListState extends State<ApodList> {
   fetch() async {
     ApiNasa apiNasa = new ApiNasa();
     apiNasa.getCurrentUrl();
-    apiNasa.setCurrentDate(apiNasa.currentDate.subtract(new Duration(days: 5)));
+    apiNasa.setCurrentDate(apiNasa.currentDate.subtract(new Duration(days: 3)));
 
     print(apiNasa.apiUrl);
     final res = await http.get(apiNasa.apiUrl);
@@ -124,7 +124,8 @@ class _ApodListState extends State<ApodList> {
         items = items + json.decode(res.body).reversed.toList();
       });
     } else {
-      throw ("some arbitrary error");
+      // throw ("some arbitrary error");
+      print('ERRO LOAD API');
     }
   }
 

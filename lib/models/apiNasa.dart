@@ -34,7 +34,7 @@ class ApiNasa {
   }
 
   void startDate() {
-    var subt = currentDate.subtract(new Duration(days: 4));
+    var subt = currentDate.subtract(new Duration(days: 2));
     setStartDate(formatter.format(subt));
   }
 
