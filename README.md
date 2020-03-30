@@ -1,16 +1,27 @@
-# nasa_apod_flutter
+## Astronomy Picture of Day
+---
 
-A new Flutter project.
+![Banner Do Projeto](https://github.com/maccali/guilhermemaccali.com/blob/master/apod.png)
 
-## Getting Started
+### Tecnologias
+> ---
+> * Flutter
+> * APoD - Nasa API
+> ---
 
-This project is a starting point for a Flutter application.
+### Recursos
+> ---
+> * Scroll Infinito 3/3
+> * Tratamento de dados
+> * Controle de carregamento
+> * Carrega Vídeos e imagens
+> ---
 
-A few resources to get you started if this is your first Flutter project:
+![Imagem 1 da aplicação](https://github.com/maccali/guilhermemaccali.com/blob/master/img/img1.jpeg)
+![Imagem 2 da aplicação](https://github.com/maccali/guilhermemaccali.com/blob/master/img/img2.jpeg)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Observações
+> ---
+ Alguns problemas na resposta de alguns recursos, principalmente imagens entre o componente Flutter e a API aconteceram, tendo que ser usado uma lib de renderização de HTML, pois a resposta se tornou mais satisfatória.
+> ---
