@@ -1,7 +1,7 @@
 ## Astronomy Picture of Day
 ---
 
-![Banner Do Projeto](https://github.com/maccali/guilhermemaccali.com/blob/master/apod.png)
+![Banner Do Projeto](https://github.com/maccali/nasa_apod_flutter/blob/master/apod.png)
 
 ### Tecnologias
 > ---
@@ -17,8 +17,8 @@
 > * Carrega Vídeos e imagens
 > ---
 
-![Imagem 1 da aplicação](https://github.com/maccali/guilhermemaccali.com/blob/master/img/img1.jpeg)
-![Imagem 2 da aplicação](https://github.com/maccali/guilhermemaccali.com/blob/master/img/img2.jpeg)
+![Imagem 1 da aplicação](https://github.com/maccali/nasa_apod_flutter/blob/master/img/img1.jpeg)
+![Imagem 2 da aplicação](https://github.com/maccali/nasa_apod_flutter/blob/master/img/img2.jpeg)
 
 
 ### Observações
